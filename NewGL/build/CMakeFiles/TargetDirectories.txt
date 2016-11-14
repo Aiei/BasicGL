@@ -1,0 +1,3 @@
+D:/Dependencies/NewGL/build/CMakeFiles/NewGL.dir
+D:/Dependencies/NewGL/build/CMakeFiles/ALL_BUILD.dir
+D:/Dependencies/NewGL/build/CMakeFiles/ZERO_CHECK.dir
