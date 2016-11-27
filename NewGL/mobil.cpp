@@ -7,6 +7,11 @@ extern GLFWwindow* window;
 #include "object3.hpp"
 #include "mobil.hpp"
 
+float levelW = 9.0f;
+float levelL = 9.0f;
+float levelWm = -18.0f;
+float levelLm = -9.0f;
+
 void mobil::update()
 {
 	static double lastTime = glfwGetTime();
@@ -18,6 +23,22 @@ void mobil::update()
 		currentSpeed += acceleration * deltaTime;
 		if (currentSpeed > maxSpeed)
 			currentSpeed = maxSpeed;
+	}
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE
+		&& glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE)
+	{
+		if (currentSpeed > 0)
+		{
+			currentSpeed -= acceleration * 0.5f * deltaTime;
+			if (currentSpeed < 0)
+				currentSpeed = 0;
+		}
+		if (currentSpeed < 0)
+		{
+			currentSpeed += acceleration * 0.5f * deltaTime;
+			if (currentSpeed > 0)
+				currentSpeed = 0;
+		}
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
@@ -33,6 +54,15 @@ void mobil::update()
 	{
 		object3::rotate(turningSpeed * deltaTime * -1, glm::vec3(0, 1, 0));
 	}
+
+	if (pos.x > levelW)
+		pos.x = levelW;
+	if (pos.x < levelWm)
+		pos.x = levelWm;
+	if (pos.z > levelL)
+		pos.z = levelL;
+	if (pos.z < levelLm)
+		pos.z = levelLm;
 
 	object3::moveForward(currentSpeed * deltaTime);
 

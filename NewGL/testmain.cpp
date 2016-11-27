@@ -23,10 +23,13 @@ using namespace glm;
 
 #include "object3.hpp"
 #include "mobil.hpp"
+#include "controls2.hpp"
 
 int main(void)
 {
 	mobil mobil1;
+	controls2 tpv;
+	bool usingTpv = false;
 
 	if (!glfwInit())
 	{
@@ -80,15 +83,15 @@ int main(void)
 	GLuint ViewMatrixID = glGetUniformLocation(programID, "V");
 	GLuint ModelMatrixID = glGetUniformLocation(programID, "M");
 
-	GLuint Texture = loadDDS("objs/car_texture.DDS");
-	GLuint Texture2 = loadDDS("objs/circuit.DDS");
+	GLuint Texture = loadDDS("objs/cartex.DDS");
+	GLuint Texture2 = loadDDS("objs/circuittex.DDS");
 
 	GLuint TextureID = glGetUniformLocation(programID, "myTextureSampler");
 
 	std::vector<glm::vec3> vertices;
 	std::vector<glm::vec2> uvs;
 	std::vector<glm::vec3> normals;
-	bool res = loadOBJ("objs/carmini.obj", vertices, uvs, normals);
+	bool res = loadOBJ("objs/car.obj", vertices, uvs, normals);
 
 	std::vector<glm::vec3> vertices2;
 	std::vector<glm::vec2> uvs2;
@@ -131,9 +134,28 @@ int main(void)
 
 		glUseProgram(programID);
 
-		computeMatricesFromInputs();
-		glm::mat4 ProjectionMatrix = getProjectionMatrix();
-		glm::mat4 ViewMatrix = getViewMatrix();
+		if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+			usingTpv = true;
+		}
+		if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS) {
+			usingTpv = false;
+		}
+
+		glm::mat4 ProjectionMatrix;
+		glm::mat4 ViewMatrix;
+		if (usingTpv)
+		{
+			tpv.computeMatricesFromInputs(mobil1.pos, mobil1.rot);
+			ProjectionMatrix = tpv.getProjectionMatrix();
+			ViewMatrix = tpv.getViewMatrix();
+		}
+		else
+		{
+			computeMatricesFromInputs();
+			ProjectionMatrix = getProjectionMatrix();
+			ViewMatrix = getViewMatrix();
+		}
+
 		glm::mat4 ModelMatrix = glm::mat4(1.0);
 		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
